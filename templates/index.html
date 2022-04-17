@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Автоферма</title>
+	<link rel="stylesheet" href="static/vendors/feather/feather.css">
+	<link rel="stylesheet" href="static/vendors/mdi/css/materialdesignicons.min.css">
+	<link rel="stylesheet" href="static/vendors/ti-icons/css/themify-icons.css">
+	<link rel="stylesheet" href="static/vendors/typicons/typicons.css">
+	<link rel="stylesheet" href="static/vendors/simple-line-icons/css/simple-line-icons.css">
+	<link rel="stylesheet" href="static/vendors/css/vendor.bundle.base.css">
+	<link rel="stylesheet" href="static/css/vertical-layout-light/style.css">
+	<link rel="shortcut icon" href="static/images/favicon.png" />
+	<style>
+		small {
+            font-size: 0.5em;
+		}
+	</style>
+</head>
+<body>
+<div class="container-scroller">
+	<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+		<div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+			<div class="me-3">
+				<button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+					<span class="icon-menu"></span>
+				</button>
+			</div>
+			<div>
+				<a class="navbar-brand brand-logo" href="index.html">
+					Проект БАИК
+				</a>
+				<a class="navbar-brand brand-logo-mini" href="index.html">
+					<img src="static/images/logo-mini.svg" alt="logo" />
+				</a>
+			</div>
+		</div>
+		<div class="navbar-menu-wrapper d-flex align-items-top">
+			<ul class="navbar-nav">
+				<li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
+					<h1 class="welcome-text">Панель <span class="text-black fw-bold">администратора</span></h1>
+					<h3 class="welcome-sub-text">Состояние фермы сегодня </h3>
+				</li>
+			</ul>
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item dropdown">
+					<div class="nav-link d-flex justify-content-between align-items-center">
+						<h3 id="date" class="mb-0 mx-1"></h3>
+						<h3 id="time" class="mb-0 mx-1"></h3>
+						<i class="icon-calendar icon-lg mx-2"></i>
+					</div>
+				</li>
+			</ul>
+			<button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+				<span class="mdi mdi-menu"></span>
+			</button>
+		</div>
+	</nav>
+	<div class="container-fluid page-body-wrapper">
+		<nav class="sidebar sidebar-offcanvas" id="sidebar">
+			<ul class="nav">
+				<li class="nav-item active">
+					<a class="nav-link" href="/">
+						<i class="mdi mdi-grid-large menu-icon"></i>
+						<span class="menu-title">Сводка</span>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/settings">
+						<i class="mdi mdi-settings menu-icon"></i>
+						<span class="menu-title">Настройки</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<div class="main-panel">
+			<div class="content-wrapper">
+				<div class="row border-bottom mb-3">
+					<div class="col-8 stretch-card justify-content-between">
+						<div>
+							<p class="statistics-title">Состояние</p>
+							<a style="text-decoration:none;" target="_blank" rel="noopener noreferrer" href="https://forum.libreelec.tv/thread/17860-how-to-interpret-rpi-vcgencmd-get-throttled/#codeLine_1_com_woltlab_wbb_post_122608_b86482"><h3 id="code" class="rate-percentage"></h3></a>
+						</div>
+						<div class="d-none d-md-block">
+							<p class="statistics-title">Напряжение</p>
+							<h3 id="voltage" class="rate-percentage"></h3>
+						</div>
+						<div class="d-none d-md-block">
+							<p class="statistics-title">Плата</p>
+							<h3 id="cpu" class="rate-percentage"></h3>
+						</div>
+						<div>
+							<p class="statistics-title">Прошло с включения</p>
+							<h3 id="uptime" class="rate-percentage"></h3>
+						</div>
+					</div>
+					<div class="col-4 align-content-center d-grid justify-content-end">
+						<button id="export" href="#" class="btn btn-outline-success me-0"><i class="icon-download"></i> Экспорт</button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-8 grid-margin stretch-card">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash mb-4">Переключатели</h4>
+								<div class="row">
+									<div class="col-sm">
+										<p>Состояние насоса</p>
+										<div class="btn-group" role="group">
+											<button id="relay1-pause" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-control-pause"></i>
+											</button>
+											<button id="relay1-auto" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-reload"></i>
+											</button>
+											<button id="relay1-play" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-control-play"></i>
+											</button>
+										</div>
+									</div>
+
+									<div class="col-sm">
+										<p>Состояние лампы</p>
+										<div class="btn-group" role="group">
+											<button id="relay2-pause" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-control-pause"></i>
+											</button>
+											<button id="relay2-auto" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-reload"></i>
+											</button>
+											<button id="relay2-play" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-control-play"></i>
+											</button>
+										</div>
+									</div>
+
+									<div class="col-sm">
+										<p>Состояние вентилятора</p>
+										<div class="btn-group" role="group">
+											<button id="relay3-pause" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-control-pause"></i>
+											</button>
+											<button id="relay3-auto" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-reload"></i>
+											</button>
+											<button id="relay3-play" type="button" class="btn btn-primary btn-secondary">
+												<i class="ti-control-play"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 grid-margin stretch-card">
+						<div id="co2-status-card" class="card card-rounded">
+							<div class="card-body pb-0">
+								<h4 class="card-title card-title-dash text-white mb-4">Состояние CO<small>2</small></h4>
+								<div class="row">
+									<div class="col-sm-4">
+										<h2 id="co2" class="text-info"></h2>
+										<p id="co2-status" style="color: #b7b7b7"></p>
+									</div>
+									<div class="col-sm-8">
+										<div class="status-summary-chart-wrapper pb-4">
+											<canvas id="co2-stats"></canvas>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-2 grid-margin">
+						<div id="water-good" class="card bg-info card-rounded">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash text-white mb-4 text-capitalize" style="text-transform: none !important;">Уровень жидкости</h4>
+								<h5>Низкий</h5>
+							</div>
+						</div>
+						<div id="water-danger" class="card bg-danger card-rounded visually-hidden">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash text-white mb-4" style="text-transform: none !important;">Уровень жидкости</h4>
+								<h5>Высокий</h5>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 grid-margin">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<div class="d-flex justify-content-around">
+									<svg width="50%" height="35%" viewBox="0 0 25.6 35.79" xmlns="http://www.w3.org/2000/svg">
+										<defs>
+											<mask id="mask-1">
+												<path id="tear" d="M15 3v35.913Z" fill="none" stroke="#ffffff" stroke-width="30"/>
+											</mask>
+										</defs>
+										<path d="M12.8 0q1.5 3.8 10 15a12.8 12.8 0 1 1-20 0q8.5-11.2 10-15Z" fill="rgb(240,240,240)"/>
+										<path d="M15 3q1.5 3.8 10 15a12.8 12.8 0 1 1-20 0Q13.5 6.8 15 3Z" id="humidity-color" mask="url(#mask-1)" transform="translate(-2.2 -3)"/>
+									</svg>
+									<div class="align-content-center text-end">
+										<h5 class="text-muted mb-2">Влажность</h5>
+										<h3 id="humidity" class="mb-0 fw-bold"></h3>
+										<p id="humidity-status" class="text-muted mb-1"></p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-6 grid-margin">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<div class="d-flex">
+									<canvas id="temperature-chart"></canvas>
+								</div>
+								<div class="text-end">
+									<h5 class="text-muted mb-2">Температура</h5>
+									<h3 id="temperature" class="mb-0 fw-bold"></h3>
+									<p id="temperature-status" class="text-muted mb-1"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<footer class="footer">
+	<div class="d-sm-flex justify-content-center justify-content-sm-between">
+		<span class="text-muted text-center text-sm-left d-block d-sm-inline-block">С использованием BootstrapDash.</span>
+		<span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Разработчик <a href="https://github.com/ntdv" target="_blank">Вальковец Данила</a></span>
+		<span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Copyright © 2022. Все права защищены.</span>
+	</div>
+</footer>
+<script src="static/vendors/js/vendor.bundle.base.js"></script>
+<script src="static/vendors/chart.js/Chart.min.js"></script>
+<script src="static/vendors/progressbar.js/progressbar.min.js"></script>
+
+<script>
+	new Chart(document.getElementById("co2-stats").getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['', '', '', '', '', ''],
+            datasets: [{
+                label: '',
+                data: [50, 68, 70, 10, 12, 80],
+                backgroundColor: "#ffcc00",
+                borderColor: [
+                    '#21cc7c',
+                ],
+                borderWidth: 4,
+                fill: false,
+                pointBorderWidth: 0,
+                pointRadius: [0, 0, 0, 0, 0, 0],
+                pointHoverRadius: [0, 0, 0, 0, 0, 0],
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    display: false,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false,
+                        color: "#F0F0F0"
+                    },
+                    ticks: {
+                        beginAtZero: false,
+                        autoSkip: true,
+                        maxTicksLimit: 4,
+                        fontSize: 10,
+                        color: "#6B778C"
+                    }
+                }],
+                xAxes: [{
+                    display: false,
+                    gridLines: {
+                        display: false,
+                        drawBorder: false,
+                    },
+                    ticks: {
+                        beginAtZero: false,
+                        autoSkip: true,
+                        maxTicksLimit: 7,
+                        fontSize: 10,
+                        color: "#6B778C"
+                    }
+                }],
+            },
+            legend: false,
+
+            elements: {
+                line: {
+                    tension: 0.4,
+                }
+            },
+            tooltips: {
+                display: false
+            }
+        }
+    });
+
+    let settings = { };
+	let hum_progressbar = new ProgressBar.Path('#tear', {
+        easing: 'easeInOut',
+        duration: 1400
+    });
+	let temp_chart = new Chart(document.getElementById('temperature-chart'), {
+        type: 'horizontalBar',
+        data: {
+            barShowStroke: false,
+            labels: [''],
+            datasets: [
+                {
+                    label: 'Температура',
+                    data: [],
+                    backgroundColor: 'rgba(13,110,252,0.61)',
+                }
+            ]
+        },
+        options: {
+            animation: {
+                duration: 1400
+            },
+            beginAtZero: true,
+            maintainAspectRatio: false,
+            responsive: true,
+            legend: {
+                display: false
+            },
+            title: {
+                display: false
+            },
+            tooltips: [{display: false}],
+            scales: {
+                yAxes: [{
+                    display: false,
+                    gridLines: {
+                        drawOnChartArea: false
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        suggestedMin: -30,
+                        suggestedMax: 50,
+                    }
+                }]
+            }
+        }
+    });
+
+    function relayUpdate(relayId, state) {
+        const relayPause = document.getElementById(relayId + '-pause');
+        const relayAuto = document.getElementById(relayId + '-auto');
+        const relayPlay = document.getElementById(relayId + '-play');
+
+        switch (state) {
+            case '-1':
+                relayPause.classList.remove('btn-secondary');
+                if (!relayAuto.classList.contains('btn-secondary')) {
+                    relayAuto.classList.add('btn-secondary');
+                }
+                if (!relayPlay.classList.contains('btn-secondary')) {
+                    relayPlay.classList.add('btn-secondary');
+                }
+                break;
+            case '0':
+                if (!relayPause.classList.contains('btn-secondary')) {
+                    relayPause.classList.add('btn-secondary');
+                }
+                relayAuto.classList.remove('btn-secondary');
+                if (!relayPlay.classList.contains('btn-secondary')) {
+                    relayPlay.classList.add('btn-secondary');
+                }
+                break;
+            case '1':
+                if (!relayPause.classList.contains('btn-secondary')) {
+                    relayPause.classList.add('btn-secondary');
+                }
+                if (!relayAuto.classList.contains('btn-secondary')) {
+                    relayAuto.classList.add('btn-secondary');
+                }
+                relayPlay.classList.remove('btn-secondary');
+                break;
+        }
+    }
+
+    function handleDataUpdate(res) {
+        relayUpdate('relay1', settings.r1);
+        relayUpdate('relay2', settings.r2);
+        relayUpdate('relay3', settings.r3);
+
+        const water = res.wat;
+        if (water) {
+            document.getElementById('water-good').classList.remove('visually-hidden');
+            const water_danger = document.getElementById('water-danger').classList;
+            if (!water_danger.contains('visually-hidden')) {
+                water_danger.add('visually-hidden');
+            }
+        } else {
+            const water_good = document.getElementById('water-good').classList;
+            if (!water_good.contains('visually-hidden')) {
+                water_good.add('visually-hidden');
+            }
+            document.getElementById('water-danger').classList.remove('visually-hidden');
+        }
+
+        const co2 = res.co2.co2;
+        if (co2 >= settings.co2e) {
+            document.getElementById('co2-status-card').style.backgroundColor = '#062759';
+            document.getElementById('co2-status').innerHTML = 'избыток';
+        } else if (co2 <= settings.co2b) {
+            document.getElementById('co2-status-card').style.backgroundColor = '#5e9eff';
+            document.getElementById('co2-status').innerHTML = 'недостаток';
+        } else {
+            document.getElementById('co2-status-card').style.backgroundColor = '#0d6efd';
+            document.getElementById('co2-status').innerHTML = 'достаточно';
+        }
+        document.getElementById('co2').innerHTML = co2 + ' <small> ppm</small>';
+
+        const humidity = res.hum;
+        if (humidity >= settings.hume) {
+            document.getElementById('humidity-color').style.fill = '#212564';
+            document.getElementById('humidity-status').innerHTML = 'высокая';
+        } else if (humidity <= settings.humb) {
+            document.getElementById('humidity-color').style.fill = '#c0edff';
+            document.getElementById('humidity-status').innerHTML = 'низкая';
+        } else {
+            document.getElementById('humidity-color').style.fill = 'rgb(31,100,178)';
+            document.getElementById('humidity-status').innerHTML = 'достаточная';
+        }
+        hum_progressbar.animate(humidity / 200);  // Number from 0.0 to 0.5
+        document.getElementById('humidity').innerHTML = humidity + "%";
+
+        const temperature = res.tmp;
+        if (temperature >= settings.teme) {
+            temp_chart.data.datasets[0].backgroundColor = 'rgba(255,175,0,0.65)';
+            document.getElementById('temperature-status').innerHTML = 'высокая';
+        } else if (temperature <= settings.temb) {
+            temp_chart.data.datasets[0].backgroundColor = 'rgba(192,237,255,0.65)';
+            document.getElementById('temperature-status').innerHTML = 'низкая';
+        } else {
+            temp_chart.data.datasets[0].backgroundColor = 'rgba(13,110,252,0.65)';
+            document.getElementById('temperature-status').innerHTML = 'достаточная';
+        }
+        temp_chart.data.datasets[0].data[0] = temperature;
+        temp_chart.options.scales.xAxes[0].ticks.suggestedMin = Math.min(settings.temb, 0);
+        temp_chart.options.scales.xAxes[0].ticks.suggestedMax = Math.max(settings.teme, 0);
+        temp_chart.update();
+        document.getElementById('temperature').innerHTML = temperature + " °C";
+
+        const voltage = res.volt;
+        document.getElementById('voltage').innerHTML = parseFloat(voltage).toFixed(2) + " В";
+
+        const cpuTemperature = res.cpu;
+        document.getElementById('cpu').innerHTML = cpuTemperature + " °C";
+
+        const code = res.cod;
+        document.getElementById('code').innerHTML = code;
+
+        const uptime = parseFloat(res.upt).toFixed(1);
+        document.getElementById('uptime').innerHTML = uptime + " часов";
+
+        const date = res.dat;
+        document.getElementById('date').innerHTML = date;
+
+        const time = res.tim;
+        document.getElementById('time').innerHTML = time;
+    }
+
+    async function refresh() {
+        try {
+            await fetch("/static/data/settings.json", {cache: "no-store"})
+                .then(res => res.json())
+                .then(newSettings => settings = newSettings);
+
+            const responseData = await
+                fetch("/static/data/update.json", {cache: "no-store"})
+                    .then(res => res.json());
+
+            handleDataUpdate(responseData);
+        } catch (e) {
+            console.log(e);
+            //window.alert('Не удается получить данные!');
+        } finally {
+            setTimeout(refresh, 3000);
+        }
+    }
+
+    refresh();
+
+    document.getElementById("relay1-play").addEventListener("click", () => fetch("/relay1/1"));
+    document.getElementById("relay1-auto").addEventListener("click", () => fetch("/relay1/0"));
+    document.getElementById("relay1-pause").addEventListener("click", () => fetch("/relay1/-1"));
+
+    document.getElementById("relay2-play").addEventListener("click", () => fetch("/relay2/1"));
+    document.getElementById("relay2-auto").addEventListener("click", () => fetch("/relay2/0"));
+    document.getElementById("relay2-pause").addEventListener("click", () => fetch("/relay2/-1"));
+
+    document.getElementById("relay3-play").addEventListener("click", () => fetch("/relay3/1"));
+    document.getElementById("relay3-auto").addEventListener("click", () => fetch("/relay3/0"));
+    document.getElementById("relay3-pause").addEventListener("click", () => fetch("/relay3/-1"));
+
+    document.getElementById('export').addEventListener("click", (e) => {
+        e.preventDefault();
+        window.open('/static/data/settings.json');
+        window.open('/static/data/update.json');
+    });
+</script>
+
+<script src="static/js/off-canvas.js"></script>
+<script src="static/js/hoverable-collapse.js"></script>
+<script src="static/js/template.js"></script>
+</body>
+</html>

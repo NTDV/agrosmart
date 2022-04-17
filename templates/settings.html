@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Автоферма</title>
+	<link rel="stylesheet" href="static/vendors/feather/feather.css">
+	<link rel="stylesheet" href="static/vendors/mdi/css/materialdesignicons.min.css">
+	<link rel="stylesheet" href="static/vendors/ti-icons/css/themify-icons.css">
+	<link rel="stylesheet" href="static/vendors/typicons/typicons.css">
+	<link rel="stylesheet" href="static/vendors/simple-line-icons/css/simple-line-icons.css">
+	<link rel="stylesheet" href="static/vendors/css/vendor.bundle.base.css">
+	<link rel="stylesheet" href="static/css/vertical-layout-light/style.css">
+	<link rel="stylesheet" href="static/js/select.dataTables.min.css">
+	<link rel="shortcut icon" href="static/images/favicon.png" />
+</head>
+<body>
+<div class="container-scroller">
+	<nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex align-items-top flex-row">
+		<div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
+			<div class="me-3">
+				<button class="navbar-toggler navbar-toggler align-self-center" type="button" data-bs-toggle="minimize">
+					<span class="icon-menu"></span>
+				</button>
+			</div>
+			<div>
+				<a class="navbar-brand brand-logo" href="index.html">Проект БАИК</a>
+				<a class="navbar-brand brand-logo-mini" href="index.html">
+					<img src="static/images/logo-mini.svg" alt="logo" />
+				</a>
+			</div>
+		</div>
+		<div class="navbar-menu-wrapper d-flex align-items-top">
+			<ul class="navbar-nav">
+				<li class="nav-item font-weight-semibold d-none d-lg-block ms-0">
+					<h1 class="welcome-text">Панель <span class="text-black fw-bold">администратора</span></h1>
+					<h3 class="welcome-sub-text">Состояние фермы сегодня </h3>
+				</li>
+			</ul>
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item dropdown">
+					<div class="nav-link d-flex justify-content-between align-items-center">
+						<h3 id="date" class="mb-0 mx-1"></h3>
+						<h3 id="time" class="mb-0 mx-1"></h3>
+						<i class="icon-calendar icon-lg mx-2"></i>
+					</div>
+				</li>
+			</ul>
+			<button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-bs-toggle="offcanvas">
+				<span class="mdi mdi-menu"></span>
+			</button>
+		</div>
+	</nav>
+	<div class="container-fluid page-body-wrapper">
+		<nav class="sidebar sidebar-offcanvas" id="sidebar">
+			<ul class="nav">
+				<li class="nav-item">
+					<a class="nav-link" href="/">
+						<i class="mdi mdi-grid-large menu-icon"></i>
+						<span class="menu-title">Сводка</span>
+					</a>
+				</li>
+				<li class="nav-item active">
+					<a class="nav-link" href="/settings">
+						<i class="mdi mdi-settings menu-icon"></i>
+						<span class="menu-title">Настройки</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+		<form action="/setup" method="post" class="main-panel">
+			<div class="content-wrapper">
+				<div class="row border-bottom mb-3">
+					<div class="col-8 stretch-card justify-content-between">
+						<div>
+							<p class="statistics-title">Состояние</p>
+							<a style="text-decoration:none;" target="_blank" rel="noopener noreferrer" href="https://forum.libreelec.tv/thread/17860-how-to-interpret-rpi-vcgencmd-get-throttled/#codeLine_1_com_woltlab_wbb_post_122608_b86482"><h3 id="code" class="rate-percentage"></h3></a>
+						</div>
+						<div class="d-none d-md-block">
+							<p class="statistics-title">Напряжение</p>
+							<h3 id="voltage" class="rate-percentage"></h3>
+						</div>
+						<div class="d-none d-md-block">
+							<p class="statistics-title">Плата</p>
+							<h3 id="cpu" class="rate-percentage"></h3>
+						</div>
+						<div>
+							<p class="statistics-title">Прошло с включения</p>
+							<h3 id="uptime" class="rate-percentage"></h3>
+						</div>
+					</div>
+
+					<div class="col-4 align-content-center d-grid justify-content-end">
+						<button type="submit" href="#" class="btn btn-outline-success me-0"><i class="icon-cloud-upload"></i> Сохранить</button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-4 grid-margin stretch-card">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash">Насос</h4>
+								<p class="card-description">Период активности</p>
+								<div class="form-group">
+									<label for="relay1-begin">Начало</label>
+									<input id="relay1-begin" name="relay1-begin" type="time" class="form-control" value="{{ r1b }}">
+								</div>
+								<div class="form-group">
+									<label for="relay1-end">Конец</label>
+									<input id="relay1-end" name="relay1-end" type="time" class="form-control" value="{{ r1e }}">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 grid-margin stretch-card">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash">Лампа</h4>
+								<p class="card-description">Период активности</p>
+								<div class="form-group">
+									<label for="relay2-begin">Начало</label>
+									<input id="relay2-begin" name="relay2-begin" class="form-control" type="time" value="{{ r2b }}">
+								</div>
+								<div class="form-group">
+									<label for="relay2-end">Конец</label>
+									<input id="relay2-end" name="relay2-end" class="form-control" type="time" value="{{ r2e }}">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 grid-margin stretch-card">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash">Вентилятор</h4>
+								<p class="card-description">Период активности</p>
+								<div class="form-group">
+									<label for="relay3-begin">Начало</label>
+									<input id="relay3-begin" name="relay3-begin" class="form-control" type="time" value="{{ r3b }}">
+								</div>
+								<div class="form-group">
+									<label for="relay3-end">Конец</label>
+									<input id="relay3-end" name="relay3-end" class="form-control" type="time" value="{{ r3e }}">
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-4 grid-margin stretch-card">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash">CO<small>2</small></h4>
+								<p class="card-description">Порог нормы</p>
+								<div class="form-group">
+									<label for="co2-begin">Низкое значение</label>
+									<input id="co2-begin" name="co2-begin" class="form-control" type="number" min="0" max="5000" step="1" value="{{ co2b }}">
+								</div>
+								<div class="form-group">
+									<label for="co2-end">Высокое значение</label>
+									<input id="co2-end" name="co2-end" class="form-control" type="number" min="0" max="5000" step="1" value="{{ co2e }}">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 grid-margin stretch-card">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash">Влажность</h4>
+								<p class="card-description">Порог нормы</p>
+								<div class="form-group">
+									<label for="humidity-begin">Низкое значение</label>
+									<input id="humidity-begin" name="humidity-begin" class="form-control" type="number" min="0" max="100" step="0.5" value="{{ humb }}">
+								</div>
+								<div class="form-group">
+									<label for="humidity-end">Высокое значение</label>
+									<input id="humidity-end" name="humidity-end" class="form-control" type="number" min="0" max="100" step="0.5" value="{{ hume }}">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 grid-margin stretch-card">
+						<div class="card card-rounded">
+							<div class="card-body">
+								<h4 class="card-title card-title-dash">Температура</h4>
+								<p class="card-description">Порог нормы</p>
+								<div class="form-group">
+									<label for="temperature-begin">Низкое значение</label>
+									<input id="temperature-begin" name="temperature-begin" class="form-control" type="number" min="-40" max="80" step="1" value="{{ temb }}">
+								</div>
+								<div class="form-group">
+									<label for="temperature-end">Высокое значение</label>
+									<input id="temperature-end" name="temperature-end" class="form-control" type="number" min="-40" max="80" step="1" value="{{ teme }}">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
+<footer class="footer">
+	<div class="d-sm-flex justify-content-center justify-content-sm-between">
+		<span class="text-muted text-center text-sm-left d-block d-sm-inline-block">С использованием BootstrapDash.</span>
+		<span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Разработчик <a href="https://github.com/ntdv" target="_blank">Вальковец Данила</a></span>
+		<span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Copyright © 2022. Все права защищены.</span>
+	</div>
+</footer>
+<script src="static/vendors/js/vendor.bundle.base.js"></script>
+<script src="static/vendors/chart.js/Chart.min.js"></script>
+<script src="static/vendors/progressbar.js/progressbar.min.js"></script>
+
+<script>
+    function handleDataUpdate(res) {
+        const voltage = res.volt;
+        document.getElementById('voltage').innerHTML = parseFloat(voltage).toFixed(2) + " В";
+
+        const cpuTemperature = res.cpu;
+        document.getElementById('cpu').innerHTML = cpuTemperature + " °C";
+
+        const code = res.cod;
+        document.getElementById('code').innerHTML = code;
+
+        const uptime = parseFloat(res.upt).toFixed(1);
+        document.getElementById('uptime').innerHTML = uptime + " часов";
+
+        const date = res.dat;
+        document.getElementById('date').innerHTML = date;
+
+        const time = res.tim;
+        document.getElementById('time').innerHTML = time;
+    }
+
+    async function refresh() {
+        try {
+            const responseData = await
+                fetch("/static/data/update.json", {cache: "no-store"})
+                    .then(res => res.json());
+
+            handleDataUpdate(responseData);
+        } catch (e) {
+            console.log(e);
+            //window.alert('Не удается получить данные!');
+        } finally {
+            setTimeout(refresh, 3000);
+        }
+    }
+
+    refresh();
+</script>
+<script src="static/js/template.js"></script>
+<script src="static/js/off-canvas.js"></script>
+</body>
+</html>
